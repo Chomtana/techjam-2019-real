@@ -1,0 +1,25 @@
+{
+  "name": "myapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./src/index.js"
+  },
+  "author": "",
+  "license": "GPL-3.0-only",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "lodash": "^4.17.15",
+    "mongodb": "^3.3.4",
+    "mongoose": "^5.7.12",
+    "mysql": "^2.17.1"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0"
+  }
+}

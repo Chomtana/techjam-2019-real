@@ -1,0 +1,1 @@
+docker rmi myapp:1.0 --force

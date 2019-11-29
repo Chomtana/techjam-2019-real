@@ -1,0 +1,1 @@
+docker container run --publish 8000:8000 --name myapp myapp:1.0
