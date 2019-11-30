@@ -1,4 +1,5 @@
 const {circle_intersection, three_circles_intersection} = require("./util")
+const closestPairUtil = require("./closetpair")
 
 let robots = {};
 let robots_sqrt = {
@@ -29,9 +30,9 @@ function dist(first, second, metric) {
   if (Math.abs(first.x) > 1e9 || Math.abs(first.y) > 1e9 || Math.abs(second.x) > 1e9 || Math.abs(second.y) > 1e9) throw "overbound";
   
   if (metric != "manhattan") {
-    return {distance: parseFloat(Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y)).toFixed(4))};
+    return {distance: Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y))};
   } else {
-    return {distance: parseFloat( (Math.abs(second.x-first.x)+Math.abs(second.y-first.y)).toFixed(4) )}
+    return {distance: (Math.abs(second.x-first.x)+Math.abs(second.y-first.y))}
   }
 }
 
@@ -107,6 +108,21 @@ function getAlienPos(alien_id) {
   return { position: three_circles_intersection(x0,y0,r0,x1,y1,r1,x2,y2,r2) };
 }
 
+function closestPair() {
+  let points = [];
+  for(let id in robots) {
+    points.push(robots[id]);
+  }
+
+  return closestPairUtil(points);
+}
+
+function closestPairDist() {
+  let p = closestPair();
+
+  return dist(p[0], p[1]).distance;
+}
+
 function api_robot(app) {
   app.post("/distance", async (req, res) => {
     try {
@@ -172,6 +188,16 @@ function api_robot(app) {
       res.status(400).send("Request was ill-formed");
     }
   });
+
+  app.get("/closestpair", async (req, res) => {
+    try {
+      res.send({distance: closestPairDist()});
+      //res.state(200).send("Distance is computed");
+    } catch (err) {
+      console.error(err);
+      res.status(400).send("Request was ill-formed");
+    }
+  });
 }
 
-module.exports = {api_robot, dist, setRobotPos, getRobotPos, find_nearest, newAlien, getAlienPos}
+module.exports = {api_robot, dist, setRobotPos, getRobotPos, find_nearest, newAlien, closestPair, closestPairDist, getAlienPos}
