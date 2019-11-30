@@ -1,4 +1,7 @@
 let robots = {};
+let robots_sqrt = {
+  
+};
 
 function dist(first, second, metric) {
   if (typeof first === "string") {
@@ -47,14 +50,15 @@ function find_nearest(pos) {
   let currmin = 1e16;
   let nearest_id = [];
 
-  for(let id in robot) {
-    let d = dist(pos, getRobotPos(id).position);
+  for(let id in robots) {
+    let d = dist(pos, getRobotPos(id).position).distance;
+    //console.log("D",d)
     if (d<currmin) {
       currmin = d;
       nearest_id = [];
-      nearest_id.push(id);
+      nearest_id.push(parseInt(id));
     } else if (d == currmin) {
-      nearest_id.push(id);
+      nearest_id.push(parseInt(id));
     }
   }
 
@@ -67,7 +71,7 @@ function api_robot(app) {
   app.post("/distance", async (req, res) => {
     try {
       res.send(dist(req.body.first_pos, req.body.second_pos, req.body.metric));
-      res.state(200).send("Distance is computed");
+      //res.state(200).send("Distance is computed");
     } catch (err) {
       console.error(err);
       if (err == "No robotId exists") {
@@ -81,7 +85,7 @@ function api_robot(app) {
   app.get("/robot/:robot_id/position", async (req, res) => {
     try {
       res.send(getRobotPos(req.params.robot_id));
-      res.status(200).send("Position of the robot is retrieved");
+      //res.status(200).send("Position of the robot is retrieved");
     } catch (err) {
       console.error(err);
       if (err == "No robotId exists") {
@@ -102,6 +106,20 @@ function api_robot(app) {
       if(err == "Have this robot already" || err == "Id is not in range [1..999999]")res.status(400).send("Request was ill-formed");
     }
   });
+
+  app.post("/nearest", async (req, res) => {
+    try {
+      res.send(find_nearest(req.body.ref_position));
+      //res.state(200).send("Distance is computed");
+    } catch (err) {
+      console.error(err);
+      if (err == "No robotId exists") {
+        res.status(424).send("Insufficient data to compute the result");
+      } else 
+        res.status(400).send("Request was ill-formed");
+      }
+    }
+  );
 }
 
 module.exports = {api_robot, dist, setRobotPos}
