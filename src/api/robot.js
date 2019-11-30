@@ -99,7 +99,13 @@ function closestPair() {
     points.push(robots[id]);
   }
 
-  console.log(closestPairUtil(points));
+  return closestPairUtil(points);
+}
+
+function closestPairDist() {
+  let p = closestPair();
+
+  return dist(p[0], p[1]).distance;
 }
 
 function api_robot(app) {
@@ -167,6 +173,16 @@ function api_robot(app) {
       res.status(400).send("Request was ill-formed");
     }
   });
+
+  app.get("/closestpair", async (req, res) => {
+    try {
+      res.send({distance: closestPairDist()});
+      //res.state(200).send("Distance is computed");
+    } catch (err) {
+      console.error(err);
+      res.status(400).send("Request was ill-formed");
+    }
+  });
 }
 
-module.exports = {api_robot, dist, setRobotPos, getRobotPos, find_nearest, newAlien, closestPair}
+module.exports = {api_robot, dist, setRobotPos, getRobotPos, find_nearest, newAlien, closestPair, closestPairDist}

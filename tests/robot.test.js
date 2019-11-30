@@ -3,7 +3,9 @@ const {
   setRobotPos,
   getRobotPos,
   find_nearest,
-  newAlien
+  newAlien,
+  closestPair,
+  closestPairDist
 } = require("../src/api/robot");
 
 test("dist", async () => {
@@ -41,4 +43,8 @@ test("alien1", async () => {
   expect(getRobotPos(1).position).toEqual({ x: 5, y: -2 });
   expect(getRobotPos(2).position).toEqual({ x: 3, y: -3 });
   newAlien("abc", 2, 2.0);
+
+  setRobotPos(3, { x: 3, y: -4 });
+
+  expect(closestPairDist()).toEqual(1);
 });
