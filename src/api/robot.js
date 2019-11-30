@@ -120,7 +120,7 @@ function api_robot(app) {
         res.status(400).send("Request was ill-formed");
       }
     }
-  })
+  });
 
   app.put("/robot/:id/position", async (req, res) => {
     try {
