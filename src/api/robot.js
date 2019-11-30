@@ -36,6 +36,8 @@ function getRobotPos(x) {
 }
 
 function setRobotPos(id, pos) {
+  if(id in robots)throw "Have this robot already";
+  if(id < 1 || id > 99999)throw "Id is not in range [1..999999]"
   robots[id] = pos;
 }
 
@@ -43,12 +45,13 @@ function api_robot(app) {
   app.post("/distance", async (req, res) => {
     try {
       res.send(dist(req.body.first_pos, req.body.second_pos, req.body.metric));
+      res.state(200).send("Distance is computed");
     } catch (err) {
       console.error(err);
       if (err == "No robotId exists") {
-        res.status(404).send("Unrecognized robot ID");
-      } else {
-        res.status(400).send();
+        res.status(424).send("Insufficient data to compute the result");
+      } else 
+        res.status(400).send("Insufficient data to compute the result");
       }
     }
   });
@@ -62,7 +65,8 @@ function api_robot(app) {
       if (err == "No robotId exists") {
         res.status(404).send("Unrecognized robot ID");
       } else {
-        res.status(400).send();
+        console.error(err);
+        res.status(400).send("Request was ill-formed");
       }
     }
   })
@@ -73,7 +77,7 @@ function api_robot(app) {
       res.status(204).send("Current position of the robot is updated");
     } catch (err) {
       console.error(err);
-      res.status(400).send();
+      if(err == "Have this robot already" || err == "Id is not in range [1..999999]")res.status(400).send("Request was ill-formed");
     }
   });
 }
