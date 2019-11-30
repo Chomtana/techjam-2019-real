@@ -97,3 +97,14 @@ test("threeintersect", async () => {
     expect(() => getAlienPos("defg")).toThrow("dont have enough information");
     expect(() => getAlienPos("defgh")).toThrow("reach end")
 })
+
+test("legacy", async () => {
+  setRobotPos(1, {west: 3, north: 5});
+  expect(getRobotPos(1).position).toEqual({ x: -3, y: 5 });
+  setRobotPos(1, {west: 3, south: 5});
+  expect(getRobotPos(1).position).toEqual({ x: -3, y: -5 });
+  setRobotPos(1, {east: 3, south: 5});
+  expect(getRobotPos(1).position).toEqual({ x: 3, y: -5 });
+  setRobotPos(1, {east: 3, north: 5});
+  expect(getRobotPos(1).position).toEqual({ x: 3, y: 5 });
+});

@@ -46,6 +46,21 @@ function getRobotPos(x) {
 function setRobotPos(id, pos) {
   //if(id in robots)throw "Have this robot already";
   if(id < 1 || id > 99999)throw "Id is not in range [1..999999]"
+
+  if (typeof pos.x === "undefined" && typeof pos.y === "undefined") {
+    if (typeof pos.north !== "undefined") {
+      pos.y = pos.north;
+    } else {
+      pos.y = -pos.south;
+    }
+
+    if (typeof pos.east !== "undefined") {
+      pos.x = pos.east;
+    } else {
+      pos.x = -pos.west;
+    }
+  }
+
   robots[id] = pos;
 
   let sqrti = Math.floor(parseFloat(pos.x)/1000);
