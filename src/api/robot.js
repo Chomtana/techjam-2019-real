@@ -2,9 +2,11 @@ let robots = {};
 
 function dist(first, second, metric) {
   if (typeof first === "string") {
+    if (!first.match(/^robot#([1-9][0-9]*)$/)) throw "malform robot";
     first = getRobotPos(/^robot#([1-9][0-9]*)$/.exec(first)[1]).position
   }
   if (typeof second === "string") {
+    if (!second.match(/^robot#([1-9][0-9]*)$/)) throw "malform robot";
     second = getRobotPos(/^robot#([1-9][0-9]*)$/.exec(second)[1]).position
   }
 
@@ -37,6 +39,26 @@ function getRobotPos(x) {
 
 function setRobotPos(id, pos) {
   robots[id] = pos;
+}
+
+function find_nearest(pos) {
+  let currmin = 1e16;
+  let nearest_id = [];
+
+  for(let id in robot) {
+    let d = dist(pos, getRobotPos(id).position);
+    if (d<currmin) {
+      currmin = d;
+      nearest_id = [];
+      nearest_id.push(id);
+    } else if (d == currmin) {
+      nearest_id.push(id);
+    }
+  }
+
+  return {
+    robot_ids: nearest_id
+  }
 }
 
 function api_robot(app) {
