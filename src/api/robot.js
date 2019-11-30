@@ -1,7 +1,13 @@
+const {circle_intersection} = require("./util")
+
 let robots = {};
 let robots_sqrt = {
 
 };
+
+let alien_robots = {
+
+}
 
 function dist(first, second, metric) {
   if (typeof first === "string") {
@@ -41,7 +47,7 @@ function getRobotPos(x) {
 }
 
 function setRobotPos(id, pos) {
-  if(id in robots)throw "Have this robot already";
+  //if(id in robots)throw "Have this robot already";
   if(id < 1 || id > 99999)throw "Id is not in range [1..999999]"
   robots[id] = pos;
 
@@ -63,10 +69,10 @@ function find_nearest(pos) {
     //console.log("D",d)
     if (d<currmin) {
       currmin = d;
-      nearest_id = id;
+      nearest_id = parseInt(id);
       //nearest_id.push(parseInt(id));
-    } else if (d == currmin && id < nearest_id) {
-      nearest_id = id;
+    } else if (d == currmin && parseInt(id) < nearest_id) {
+      nearest_id = parseInt(id);
       //nearest_id.push(parseInt(id));
     }
   }
@@ -74,6 +80,16 @@ function find_nearest(pos) {
   return {
     robot_ids: nearest_id == -1 ? [] : [nearest_id]
   }
+}
+
+function newAlien(alien_id, robot_id, distance) {
+  if (!(alien_id in alien_robots))
+    alien_robots[alien_id] = {};
+  alien_robots[alien_id][robot_id] = distance
+}
+
+function getAlienPos(alien_id) {
+  
 }
 
 function api_robot(app) {
@@ -112,10 +128,8 @@ function api_robot(app) {
       res.status(204).send("Current position of the robot is updated");
     } catch (err) {
       console.error(err);
-      if(err == "Have this robot already" || err == "Id is not in range [1..999999]") res.status(400).send("Request was ill-formed");
-      else {
-        res.status(400).send("Request was ill-formed");
-      }
+      if(err == "Id is not in range [1..999999]")res.status(400).send("Request was ill-formed");
+      else res.status(400).send("Request was ill-formed");
     }
   });
 
@@ -127,11 +141,22 @@ function api_robot(app) {
       console.error(err);
       if (err == "No robotId exists") {
         res.status(424).send("Insufficient data to compute the result");
-      } else 
+      } else {
         res.status(400).send("Request was ill-formed");
       }
     }
-  );
+  });
+
+  app.post("/alien/:id/report", async (req, res) => {
+    try {
+      newAlien(req.params.id, req.body.robot_id, req.body.distance);
+      console.log(alien_robots);
+      res.status(204).send("");
+    } catch (err) {
+      console.error(err);
+      res.status(400).send("Request was ill-formed");
+    }
+  });
 }
 
-module.exports = {api_robot, dist, setRobotPos}
+module.exports = {api_robot, dist, setRobotPos, getRobotPos, find_nearest, newAlien}
