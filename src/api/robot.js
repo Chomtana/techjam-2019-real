@@ -1,6 +1,12 @@
 function dist(first, second) {
   if (isNaN(parseFloat(first.x)) || isNaN(parseFloat(first.y)) || isNaN(parseFloat(second.x)) || isNaN(parseFloat(second.y))) throw "NaN";
-  if (Math.abs(first.x) > 10e9 || Math.abs(first.y) > 10e9 || Math.abs(second.x) > 10e9 || Math.abs(second.y) > 10e9) throw "overbound";
+  
+  first.x = parseFloat(first.x);
+  first.y = parseFloat(first.y);
+  second.x = parseFloat(second.x);
+  second.y = parseFloat(second.y);
+  
+  if (Math.abs(first.x) > 1e9 || Math.abs(first.y) > 1e9 || Math.abs(second.x) > 1e9 || Math.abs(second.y) > 1e9) throw "overbound";
   return {distance: Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y))};
 }
 
