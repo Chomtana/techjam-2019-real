@@ -21,4 +21,4 @@ function api_robot(app) {
   });
 }
 
-module.exports = {api_robot}
+module.exports = {api_robot, dist}

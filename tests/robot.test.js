@@ -11,5 +11,5 @@ test("dist", async () => {
             "y":9
         }
     };
-    expect(await dist(a).toEqual({distance: "13.038"}));
+    expect(await dist(a.first_pos, a.second_pos)).toEqual({distance: 13.0384});
 });
