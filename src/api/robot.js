@@ -1,4 +1,13 @@
+let robots = {};
+
 function dist(first, second) {
+  if (typeof first === "string") {
+    first = parseInt(getRobotPos(/^robot#([1-9][0-9]*)$/.exec(first)[1]))
+  }
+  if (typeof second === "string") {
+    second = parseInt(getRobotPos(/^robot#([1-9][0-9]*)$/.exec(second)[1]))
+  }
+
   if (isNaN(parseFloat(first.x)) || isNaN(parseFloat(first.y)) || isNaN(parseFloat(second.x)) || isNaN(parseFloat(second.y))) throw "NaN";
   
   first.x = parseFloat(first.x);
@@ -16,6 +25,10 @@ function getRobotPos(x) {
     "x": robots[x].x,
     "y": robots[x],y
   };
+}
+
+function setRobotPos(id, pos) {
+  robots[id] = pos;
 }
 
 function api_robot(app) {
@@ -36,6 +49,16 @@ function api_robot(app) {
       res.status(400).send();
     }
   })
+
+  app.put("/robot/:id/position", async (req, res) => {
+    try {
+      setRobotPos(req.params.id, req.body.position)
+      res.sendStatus(204);
+    } catch (err) {
+      console.error(err);
+      res.status(400).send();
+    }
+  });
 }
 
-module.exports = {api_robot}
+module.exports = {api_robot, dist, setRobotPos}
