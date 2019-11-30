@@ -76,6 +76,8 @@ function find_nearest(pos,k) {
   // return {
   //   robot_ids: nearest_id == -1 ? [] : [nearest_id]
   // }
+  if(pos==undefined)throw "Request was ill-formed";
+  if(robots.length==0)throw "No robotId exists";
   let t = [];
   for(let id in robots) {
     // console.log(id);
