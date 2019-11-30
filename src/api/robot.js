@@ -1,6 +1,6 @@
 let robots = {};
 
-function dist(first, second) {
+function dist(first, second, metric) {
   if (typeof first === "string") {
     first = parseInt(getRobotPos(/^robot#([1-9][0-9]*)$/.exec(first)[1]))
   }
@@ -16,7 +16,11 @@ function dist(first, second) {
   second.y = parseFloat(second.y);
   
   if (Math.abs(first.x) > 1e9 || Math.abs(first.y) > 1e9 || Math.abs(second.x) > 1e9 || Math.abs(second.y) > 1e9) throw "overbound";
-  return {distance: parseFloat(Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y)).toFixed(4))};
+  if (metric == "manhattan") {
+    return {distance: parseFloat(Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y)).toFixed(4))};
+  } else {
+    return {distance: parseFloat( (Math.abs(second.x-first.x)+Math.abs(second.y-first.y)).toFixed(4) )}
+  }
 }
 
 function setRobotPos(id, pos) {
@@ -26,7 +30,7 @@ function setRobotPos(id, pos) {
 function api_robot(app) {
   app.post("/distance", async (req, res) => {
     try {
-      res.send(dist(req.body.first_pos, req.body.second_pos));
+      res.send(dist(req.body.first_pos, req.body.second_pos, req.body.metric));
     } catch (err) {
       console.error(err);
       res.status(400).send();
