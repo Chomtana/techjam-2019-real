@@ -16,6 +16,34 @@ function dist(first, second, metric) {
     second = getRobotPos(/^robot#([1-9][0-9]*)$/.exec(second)[1]).position
   }
 
+  if (typeof first.x === "undefined" && typeof first.y === "undefined") {
+    if (typeof first.north !== "undefined") {
+      first.y = first.north;
+    } else {
+      first.y = -first.south;
+    }
+
+    if (typeof first.east !== "undefined") {
+      first.x = first.east;
+    } else {
+      first.x = -first.west;
+    }
+  }
+
+  if (typeof second.x === "undefined" && typeof second.y === "undefined") {
+    if (typeof second.north !== "undefined") {
+      second.y = second.north;
+    } else {
+      second.y = -second.south;
+    }
+
+    if (typeof second.east !== "undefined") {
+      second.x = second.east;
+    } else {
+      second.x = -second.west;
+    }
+  }
+
   if (isNaN(parseFloat(first.x)) || isNaN(parseFloat(first.y)) || isNaN(parseFloat(second.x)) || isNaN(parseFloat(second.y))) throw "NaN";
   
   first.x = parseFloat(first.x);

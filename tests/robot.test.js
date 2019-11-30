@@ -107,4 +107,20 @@ test("legacy", async () => {
   expect(getRobotPos(1).position).toEqual({ x: 3, y: -5 });
   setRobotPos(1, {east: 3, north: 5});
   expect(getRobotPos(1).position).toEqual({ x: 3, y: 5 });
+
+  var a = {
+    first_pos: {
+      east: 3,
+      south: 2
+    },
+    second_pos: {
+      west: 4,
+      north: 9
+    }
+  };
+  expect(dist(a.first_pos, a.second_pos).distance.toFixed(4)).toEqual("13.0384");
+
+  expect(dist(a.first_pos, a.second_pos, "manhattan")).toEqual({
+    distance: 18
+  });
 });
