@@ -26,8 +26,10 @@ function dist(first, second, metric) {
 function getRobotPos(x) {
   if(robots.find(x)==null) throw "No robotId exists"
   return {
-    "x": robots[x].x,
-    "y": robots[x],y
+    "position": {
+      "x": robots[x].x,
+      "y": robots[x].y
+    }
   };
 }
 
