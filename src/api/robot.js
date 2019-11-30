@@ -1,6 +1,6 @@
 let robots = {};
 let robots_sqrt = {
-  
+
 };
 
 function dist(first, second, metric) {
@@ -44,26 +44,35 @@ function setRobotPos(id, pos) {
   if(id in robots)throw "Have this robot already";
   if(id < 1 || id > 99999)throw "Id is not in range [1..999999]"
   robots[id] = pos;
+
+  let sqrti = Math.floor(parseFloat(pos.x)/1000);
+
+  if (!(sqrti in robots_sqrt)) {
+    robots_sqrt[sqrti] = [] 
+  } else {
+    robots_sqrt[sqrti].push(parseInt(id));
+  }
 }
 
 function find_nearest(pos) {
   let currmin = 1e16;
-  let nearest_id = [];
+  let nearest_id = -1;
 
   for(let id in robots) {
     let d = dist(pos, getRobotPos(id).position).distance;
     //console.log("D",d)
     if (d<currmin) {
       currmin = d;
-      nearest_id = [];
-      nearest_id.push(parseInt(id));
-    } else if (d == currmin) {
-      nearest_id.push(parseInt(id));
+      nearest_id = id;
+      //nearest_id.push(parseInt(id));
+    } else if (d == currmin && id < nearest_id) {
+      nearest_id = id;
+      //nearest_id.push(parseInt(id));
     }
   }
 
   return {
-    robot_ids: nearest_id
+    robot_ids: nearest_id == -1 ? [] : [nearest_id]
   }
 }
 
