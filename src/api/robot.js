@@ -51,10 +51,10 @@ function api_robot(app) {
       if (err == "No robotId exists") {
         res.status(424).send("Insufficient data to compute the result");
       } else 
-        res.status(400).send("Insufficient data to compute the result");
+        res.status(400).send("Request was ill-formed");
       }
     }
-  });
+  );
 
   app.get("/robot/:robot_id/position", async (req, res) => {
     try {
