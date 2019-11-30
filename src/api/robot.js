@@ -1,5 +1,7 @@
 function dist(first, second) {
-  return Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y));
+  if (isNaN(parseFloat(first.x)) || isNaN(parseFloat(first.y)) || isNaN(parseFloat(second.x)) || isNaN(parseFloat(second.y))) throw "NaN";
+  if (Math.abs(first.x) > 10e9 || Math.abs(first.y) > 10e9 || Math.abs(second.x) > 10e9 || Math.abs(second.y) > 10e9) throw "overbound";
+  return {distance: Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y))};
 }
 
 function api_robot(app) {
