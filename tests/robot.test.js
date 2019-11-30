@@ -75,3 +75,11 @@ test("alien2", async () => {
 
   expect(() => getAlienPos("defg")).toThrow("dont have enough information");
 });
+
+test("featureF", async () => {
+  setRobotPos(1, { x: 1, y: 1 });
+  setRobotPos(2, { x:0 , y:0});
+  expect(find_nearest({x: 1,y :-1},1)).toEqual({robot_ids: [2]});
+  expect(find_nearest({x: 1,y :-1})).toEqual({robot_ids: [2]});
+  expect(find_nearest({x: 1,y :-1},2)).toEqual({robot_ids: [2,1]});
+})

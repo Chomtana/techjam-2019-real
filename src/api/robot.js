@@ -3,13 +3,8 @@ const closestPairUtil = require("./closetpair")
 const _ = require("lodash")
 
 let robots = {};
-let robots_sqrt = {
-
-};
-
-let alien_robots = {
-
-}
+let robots_sqrt = {};
+let alien_robots = {};
 
 function dist(first, second, metric) {
   if (typeof first === "string") {
@@ -62,26 +57,49 @@ function setRobotPos(id, pos) {
   }
 }
 
-function find_nearest(pos) {
-  let currmin = 1e16;
-  let nearest_id = -1;
+function find_nearest(pos,k) {
+  // let currmin = 1e16;
+  // let nearest_id = -1;
 
+  // for(let id in robots) {
+  //   let d = dist(pos, getRobotPos(id).position).distance;
+  //   //console.log("D",d)
+  //   if (d<currmin) {
+  //     currmin = d;
+  //     nearest_id = parseInt(id);
+  //     //nearest_id.push(parseInt(id));
+  //   } else if (d == currmin && parseInt(id) < nearest_id) {
+  //     nearest_id = parseInt(id);
+  //     //nearest_id.push(parseInt(id));
+  //   }
+  // }
+
+  // return {
+  //   robot_ids: nearest_id == -1 ? [] : [nearest_id]
+  // }
+  let t = [];
   for(let id in robots) {
-    let d = dist(pos, getRobotPos(id).position).distance;
-    //console.log("D",d)
-    if (d<currmin) {
-      currmin = d;
-      nearest_id = parseInt(id);
-      //nearest_id.push(parseInt(id));
-    } else if (d == currmin && parseInt(id) < nearest_id) {
-      nearest_id = parseInt(id);
-      //nearest_id.push(parseInt(id));
+    // console.log(id);
+    let d = dist(pos,getRobotPos(id).position).distance;
+    t.push({d,id});
+  }
+  t.sort((a,b) => {
+    if (a.d != b.d) {
+      return a.d - b.d;
+    } else {
+      return a.id - b.id;
     }
+  });
+  let tk = k==undefined ?1:k;
+  let ans = [];
+  console.log(t);
+  for(let i in t){
+    // console.log(i);
+    ans.push(parseInt(t[i].id));
+    tk--;
+    if(tk == 0)break;
   }
-
-  return {
-    robot_ids: nearest_id == -1 ? [] : [nearest_id]
-  }
+  return { robot_ids: ans};
 }
 
 function newAlien(alien_id, robot_id, distance) {
@@ -108,7 +126,7 @@ function getAlienPos(alien_id) {
     if (Array.isArray(res)) {
       //console.log(res);
       //console.log(dist({x: res[0][0], y: res[0][1]}, {x: res[1][0], y: res[1][1]}));
-      if (dist({x: res[0][0], y: res[0][1]}, {x: res[1][0], y: res[1][1]}).distance < 1e-4) {
+      if (dist({x: res[0][0], y: res[0][1]}, {x: res[1][0], y: res[1][1]}).distance < 1e-1) {
         return {
           position: {
             x: res[0][0],
@@ -260,7 +278,7 @@ function api_robot(app) {
 
   app.post("/nearest", async (req, res) => {
     try {
-      res.send(find_nearest(req.body.ref_position));
+      res.send(find_nearest(req.body.ref_position,req.body.k));
       //res.state(200).send("Distance is computed");
     } catch (err) {
       console.error(err);
