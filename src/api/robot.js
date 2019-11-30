@@ -184,7 +184,7 @@ function api_robot(app) {
 
   app.post("/nearest", async (req, res) => {
     try {
-      res.send(find_nearest(req.body.ref_position));
+      res.send(find_nearest(req.body.ref_position,req.body.k));
       //res.state(200).send("Distance is computed");
     } catch (err) {
       console.error(err);
