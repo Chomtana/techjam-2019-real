@@ -1,4 +1,4 @@
-const {circle_intersection} = require("./util")
+const {circle_intersection, three_circles_intersection} = require("./util")
 
 let robots = {};
 let robots_sqrt = {
@@ -36,7 +36,7 @@ function dist(first, second, metric) {
 }
 
 function getRobotPos(x) {
-  console.log(robots, x);
+  // console.log(robots, x);
   if(!(x in robots)) throw "No robotId exists"
   return {
     "position" : {
@@ -84,12 +84,27 @@ function find_nearest(pos) {
 
 function newAlien(alien_id, robot_id, distance) {
   if (!(alien_id in alien_robots))
-    alien_robots[alien_id] = {};
-  alien_robots[alien_id][robot_id] = distance
+    alien_robots[alien_id] = [];
+  alien_robots[alien_id].push({...getRobotPos(robot_id).position, distance: distance});
 }
 
 function getAlienPos(alien_id) {
+  if(!(alien_id in alien_robots) || alien_robots[alien_id].length<3)throw "dont have enough information";
+  let x0 = alien_robots[alien_id][0].x;
+  let y0 = alien_robots[alien_id][0].y;
+  let r0 = alien_robots[alien_id][0].distance;
   
+  let x1 = alien_robots[alien_id][1].x;
+  let y1 = alien_robots[alien_id][1].y;
+  let r1 = alien_robots[alien_id][1].distance;
+  
+  let x2 = alien_robots[alien_id][2].x;
+  let y2 = alien_robots[alien_id][2].y;
+  let r2 = alien_robots[alien_id][2].distance;
+
+  console.log(x0,y0,r0,x1,y1,r1,x2,y2,r2);
+  console.log(three_circles_intersection(x0,y0,r0,x1,y1,r1,x2,y2,r2));
+  return { position: three_circles_intersection(x0,y0,r0,x1,y1,r1,x2,y2,r2) };
 }
 
 function api_robot(app) {
@@ -159,4 +174,4 @@ function api_robot(app) {
   });
 }
 
-module.exports = {api_robot, dist, setRobotPos, getRobotPos, find_nearest, newAlien}
+module.exports = {api_robot, dist, setRobotPos, getRobotPos, find_nearest, newAlien, getAlienPos}
