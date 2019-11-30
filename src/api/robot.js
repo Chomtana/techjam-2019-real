@@ -1,4 +1,5 @@
 const {circle_intersection} = require("./util")
+const closestPairUtil = require("./closetpair")
 
 let robots = {};
 let robots_sqrt = {
@@ -29,9 +30,9 @@ function dist(first, second, metric) {
   if (Math.abs(first.x) > 1e9 || Math.abs(first.y) > 1e9 || Math.abs(second.x) > 1e9 || Math.abs(second.y) > 1e9) throw "overbound";
   
   if (metric != "manhattan") {
-    return {distance: parseFloat(Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y)).toFixed(4))};
+    return {distance: Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y))};
   } else {
-    return {distance: parseFloat( (Math.abs(second.x-first.x)+Math.abs(second.y-first.y)).toFixed(4) )}
+    return {distance: (Math.abs(second.x-first.x)+Math.abs(second.y-first.y))}
   }
 }
 
@@ -90,6 +91,15 @@ function newAlien(alien_id, robot_id, distance) {
 
 function getAlienPos(alien_id) {
   
+}
+
+function closestPair() {
+  let points = [];
+  for(let id in robots) {
+    points.push(robots[id]);
+  }
+
+  console.log(closestPairUtil(points));
 }
 
 function api_robot(app) {
@@ -159,4 +169,4 @@ function api_robot(app) {
   });
 }
 
-module.exports = {api_robot, dist, setRobotPos, getRobotPos, find_nearest, newAlien}
+module.exports = {api_robot, dist, setRobotPos, getRobotPos, find_nearest, newAlien, closestPair}
