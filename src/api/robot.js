@@ -158,8 +158,12 @@ function getAlienPos(alien_id) {
     let r1 = alien_robots[alien_id][1].distance;
 
     let res = circle_intersection(x0,y0,r0,x1,y1,r1);
-    currres = [{x: res[0][0], y: res[0][1]}, {x: res[1][0], y: res[1][1]}];
-    currres = _.uniqWith(currres, (a,b) => dist(a,b).distance < 1e-3);
+    if (Array.isArray(res)) {
+      currres = [{x: res[0][0], y: res[0][1]}, {x: res[1][0], y: res[1][1]}];
+      currres = _.uniqWith(currres, (a,b) => dist(a,b).distance < 1e-3);
+    } else {
+      throw "dont have enough information";
+    }
   }
 
   for(let i = 0;i<alien_robots[alien_id].length;i++) {
