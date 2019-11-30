@@ -1,13 +1,11 @@
 let robots = {};
 
 function dist(first, second, metric) {
-  console.log(metric)
-
   if (typeof first === "string") {
-    first = parseInt(getRobotPos(/^robot#([1-9][0-9]*)$/.exec(first)[1]))
+    first = getRobotPos(/^robot#([1-9][0-9]*)$/.exec(first)[1]).position
   }
   if (typeof second === "string") {
-    second = parseInt(getRobotPos(/^robot#([1-9][0-9]*)$/.exec(second)[1]))
+    second = getRobotPos(/^robot#([1-9][0-9]*)$/.exec(second)[1]).position
   }
 
   if (isNaN(parseFloat(first.x)) || isNaN(parseFloat(first.y)) || isNaN(parseFloat(second.x)) || isNaN(parseFloat(second.y))) throw "NaN";
@@ -19,7 +17,7 @@ function dist(first, second, metric) {
   
   if (Math.abs(first.x) > 1e9 || Math.abs(first.y) > 1e9 || Math.abs(second.x) > 1e9 || Math.abs(second.y) > 1e9) throw "overbound";
   
-  if (metric == "manhattan") {
+  if (metric != "manhattan") {
     return {distance: parseFloat(Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y)).toFixed(4))};
   } else {
     return {distance: parseFloat( (Math.abs(second.x-first.x)+Math.abs(second.y-first.y)).toFixed(4) )}
