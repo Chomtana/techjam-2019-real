@@ -56,7 +56,7 @@ function api_robot(app) {
   app.get("/robot/:robot_id/position", async (req, res) => {
     try {
       res.send(getRobotPos(req.params.robot_id));
-      res.sendStatus(200).send("Position of the robot is retrieved");
+      res.status(200).send("Position of the robot is retrieved");
     } catch (err) {
       console.error(err);
       if (err == "No robotId exists") {
@@ -70,7 +70,7 @@ function api_robot(app) {
   app.put("/robot/:id/position", async (req, res) => {
     try {
       setRobotPos(req.params.id, req.body.position)
-      res.sendStatus(204).send("Current position of the robot is updated");
+      res.status(204).send("Current position of the robot is updated");
     } catch (err) {
       console.error(err);
       res.status(400).send();
