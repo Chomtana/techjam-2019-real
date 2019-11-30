@@ -17,6 +17,6 @@ app.use(bodyParser.json())
 app.get('/', (req, res) => res.send('Hello World!'))
 
 // Register Paths
-require('./api/calculator')(app);
+require('./api/calculator').api_calculator(app);
 
 app.listen(port, '0.0.0.0', () => console.log(`Example app listening on port ${port}!`))

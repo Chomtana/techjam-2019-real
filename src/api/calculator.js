@@ -86,7 +86,7 @@ function merge_variables(newstore, overwrite) {
   return 204;
 }
 
-module.exports = function api_calculator(app) {
+function api_calculator(app) {
   app.post("/calc", async (req, res) => {
     try {
       res.send(await calc(req.body.expression, req.body.save_to));
@@ -134,3 +134,10 @@ module.exports = function api_calculator(app) {
     }
   });
 };
+
+module.exports = {
+  api_calculator,
+  merge_variables,
+  get_variables,
+  calc
+}
