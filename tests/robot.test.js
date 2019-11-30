@@ -3,16 +3,10 @@ const {
   setRobotPos,
   getRobotPos,
   find_nearest,
-<<<<<<< HEAD
   newAlien,
-  getAlienPos
-||||||| merged common ancestors
-  newAlien
-=======
-  newAlien,
+  getAlienPos,
   closestPair,
   closestPairDist
->>>>>>> e299266336b07ced3ab8ab8e104b9893162bb7ff
 } = require("../src/api/robot");
 
 test("dist", async () => {
@@ -50,18 +44,15 @@ test("alien1", async () => {
   expect(getRobotPos(1).position).toEqual({ x: 5, y: -2 });
   expect(getRobotPos(2).position).toEqual({ x: 3, y: -3 });
   newAlien("abc", 2, 2.0);
-<<<<<<< HEAD
-  expect(getAlienPos("abc")).toEqual({
+
+  /*expect(getAlienPos("abc")).toEqual({
     "position": {
       "x": 7,
       "y": -1
     }
-  });
-||||||| merged common ancestors
-=======
+  });*/
 
   setRobotPos(3, { x: 3, y: -4 });
 
   expect(closestPairDist()).toEqual(1);
->>>>>>> e299266336b07ced3ab8ab8e104b9893162bb7ff
 });
