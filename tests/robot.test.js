@@ -83,3 +83,28 @@ test("featureF", async () => {
   expect(find_nearest({x: 1,y :-1})).toEqual({robot_ids: [2]});
   expect(find_nearest({x: 1,y :-1},2)).toEqual({robot_ids: [2,1]});
 })
+
+test("threeintersect", async () => {
+    setRobotPos(1, {x: -3, y:-4});
+    setRobotPos(2, {x: 5, y:12});
+    setRobotPos(3, {x: -1, y:0});
+    newAlien("defg",1,5);
+    newAlien("defg",2,13);
+    newAlien("defg",3,1);
+    newAlien("defgh",1,5);
+    newAlien("defgh",2,13);
+    newAlien("defgh",3,1);
+    // expect(getAlienPos("defg")).toEqual({
+    //     "position": {
+    //       "x": 0,
+    //       "y": 0
+    //     }
+    //   });
+
+    expect(getAlienPos("defgh")).toEqual({
+    "position": {
+        "x": 0,
+        "y": 0
+    }
+    });
+})
