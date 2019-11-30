@@ -76,11 +76,11 @@ function api_robot(app) {
       console.error(err);
       if (err == "No robotId exists") {
         res.status(424).send("Insufficient data to compute the result");
-      } else 
+      } else {
         res.status(400).send("Request was ill-formed");
       }
     }
-  );
+  });
 
   app.get("/robot/:robot_id/position", async (req, res) => {
     try {
@@ -95,7 +95,7 @@ function api_robot(app) {
         res.status(400).send("Request was ill-formed");
       }
     }
-  })
+  });
 
   app.put("/robot/:id/position", async (req, res) => {
     try {
@@ -103,7 +103,10 @@ function api_robot(app) {
       res.status(204).send("Current position of the robot is updated");
     } catch (err) {
       console.error(err);
-      if(err == "Have this robot already" || err == "Id is not in range [1..999999]")res.status(400).send("Request was ill-formed");
+      if(err == "Have this robot already" || err == "Id is not in range [1..999999]") res.status(400).send("Request was ill-formed");
+      else {
+        res.status(400).send("Request was ill-formed");
+      }
     }
   });
 
