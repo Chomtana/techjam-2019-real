@@ -210,6 +210,8 @@ function getAlienPos(alien_id) {
     }
   }
 
+  console.log("End res", currres);
+
   throw "reach end";
 
   
