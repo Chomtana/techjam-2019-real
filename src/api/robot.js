@@ -181,7 +181,7 @@ function getAlienPos(alien_id) {
       let newres = [];
 
       if (Array.isArray(res)) {
-        //console.log(res,currres);
+        console.log(res,currres);
         //console.log(dist({x: res[0][0], y: res[0][1]}, {x: res[1][0], y: res[1][1]}));
         if (dist({x: res[0][0], y: res[0][1]}, {x: currres[0].x, y: currres[0].y}).distance < 1e-1) {
           newres.push({x: res[0][0], y: res[0][1]});
@@ -198,7 +198,7 @@ function getAlienPos(alien_id) {
 
         newres = _.uniqWith(newres, (a,b) => dist(a,b).distance < 1e-1);
 
-        //console.log(newres);
+        console.log(newres);
 
         if (newres.length == 0) {
           throw "dont have enough information";
@@ -311,7 +311,7 @@ function api_robot(app) {
 
   app.get("/alien/:id/position", async (req, res) => {
     try {
-      res.send(getAlienPos(req.params.robot_id));
+      res.send(getAlienPos(req.params.id));
       //res.status(200).send("Position of the robot is retrieved");
     } catch (err) {
       console.error(err);

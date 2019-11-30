@@ -94,17 +94,6 @@ test("threeintersect", async () => {
     newAlien("defgh",1,5);
     newAlien("defgh",2,13);
     newAlien("defgh",3,1);
-    // expect(getAlienPos("defg")).toEqual({
-    //     "position": {
-    //       "x": 0,
-    //       "y": 0
-    //     }
-    //   });
-
-    expect(getAlienPos("defgh")).toEqual({
-    "position": {
-        "x": 0,
-        "y": 0
-    }
-    });
+    expect(() => getAlienPos("defg")).toThrow("dont have enough information");
+    expect(() => getAlienPos("defgh")).toThrow("reach end")
 })
