@@ -1,5 +1,6 @@
 const {circle_intersection, three_circles_intersection} = require("./util")
 const closestPairUtil = require("./closetpair")
+const _ = require("lodash")
 
 let robots = {};
 let robots_sqrt = {
@@ -30,9 +31,9 @@ function dist(first, second, metric) {
   if (Math.abs(first.x) > 1e9 || Math.abs(first.y) > 1e9 || Math.abs(second.x) > 1e9 || Math.abs(second.y) > 1e9) throw "overbound";
   
   if (metric != "manhattan") {
-    return {distance: Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y))};
+    return {distance: parseFloat( Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y)).toFixed(5) )};
   } else {
-    return {distance: (Math.abs(second.x-first.x)+Math.abs(second.y-first.y))}
+    return {distance: parseFloat( (Math.abs(second.x-first.x)+Math.abs(second.y-first.y)).toFixed(5) )}
   }
 }
 
@@ -90,22 +91,115 @@ function newAlien(alien_id, robot_id, distance) {
 }
 
 function getAlienPos(alien_id) {
+  if(!(alien_id in alien_robots)) throw "dont have enough information";
+  if (alien_robots[alien_id].length==2) {
+    let x0 = alien_robots[alien_id][0].x;
+    let y0 = alien_robots[alien_id][0].y;
+    let r0 = alien_robots[alien_id][0].distance;
+    
+    let x1 = alien_robots[alien_id][1].x;
+    let y1 = alien_robots[alien_id][1].y;
+    let r1 = alien_robots[alien_id][1].distance;
+
+    let res = circle_intersection(x0,y0,r0,x1,y1,r1);
+
+    //console.log(res);
+
+    if (Array.isArray(res)) {
+      //console.log(res);
+      //console.log(dist({x: res[0][0], y: res[0][1]}, {x: res[1][0], y: res[1][1]}));
+      if (dist({x: res[0][0], y: res[0][1]}, {x: res[1][0], y: res[1][1]}).distance < 1e-4) {
+        return {
+          position: {
+            x: res[0][0],
+            y: res[0][1]
+          }
+        }
+      } else {
+        throw "dont have enough information";
+      }
+    } else {
+      throw "dont have enough information";
+    }
+
+    
+  }
   if(!(alien_id in alien_robots) || alien_robots[alien_id].length<3)throw "dont have enough information";
-  let x0 = alien_robots[alien_id][0].x;
-  let y0 = alien_robots[alien_id][0].y;
-  let r0 = alien_robots[alien_id][0].distance;
   
-  let x1 = alien_robots[alien_id][1].x;
-  let y1 = alien_robots[alien_id][1].y;
-  let r1 = alien_robots[alien_id][1].distance;
+  let currres = [];
+
+  {
+    let x0 = alien_robots[alien_id][0].x;
+    let y0 = alien_robots[alien_id][0].y;
+    let r0 = alien_robots[alien_id][0].distance;
+    
+    let x1 = alien_robots[alien_id][1].x;
+    let y1 = alien_robots[alien_id][1].y;
+    let r1 = alien_robots[alien_id][1].distance;
+
+    let res = circle_intersection(x0,y0,r0,x1,y1,r1);
+    currres = [{x: res[0][0], y: res[0][1]}, {x: res[1][0], y: res[1][1]}];
+    currres = _.uniqWith(currres, (a,b) => dist(a,b).distance < 1e-3);
+  }
+
+  for(let i = 0;i<alien_robots[alien_id].length;i++) {
+    for(let j = i+1;j<alien_robots[alien_id].length;j++) {
+      let x0 = alien_robots[alien_id][i].x;
+      let y0 = alien_robots[alien_id][i].y;
+      let r0 = alien_robots[alien_id][i].distance;
+      
+      let x1 = alien_robots[alien_id][j].x;
+      let y1 = alien_robots[alien_id][j].y;
+      let r1 = alien_robots[alien_id][j].distance;
+
+      let res = circle_intersection(x0,y0,r0,x1,y1,r1);
+
+      let newres = [];
+
+      if (Array.isArray(res)) {
+        //console.log(res,currres);
+        //console.log(dist({x: res[0][0], y: res[0][1]}, {x: res[1][0], y: res[1][1]}));
+        if (dist({x: res[0][0], y: res[0][1]}, {x: currres[0].x, y: currres[0].y}).distance < 1e-1) {
+          newres.push({x: res[0][0], y: res[0][1]});
+        }
+        if (currres[1] && dist({x: res[0][0], y: res[0][1]}, {x: currres[1].x, y: currres[1].y}).distance < 1e-1) {
+          newres.push({x: res[0][0], y: res[0][1]});
+        }
+        if (dist({x: res[1][0], y: res[1][1]}, {x: currres[0].x, y: currres[0].y}).distance < 1e-1) {
+          newres.push({x: res[1][0], y: res[1][1]});
+        }
+        if (currres[1] && dist({x: res[1][0], y: res[1][1]}, {x: currres[1].x, y: currres[1].y}).distance < 1e-1) {
+          newres.push({x: res[1][0], y: res[1][1]});
+        }
+
+        newres = _.uniqWith(newres, (a,b) => dist(a,b).distance < 1e-1);
+
+        //console.log(newres);
+
+        if (newres.length == 0) {
+          throw "dont have enough information";
+        } else if (newres.length == 1) {
+          return {position: newres[0]};
+        } else {
+          currres = newres;
+        }
+        
+      } else {
+        throw "dont have enough information";
+      }
+    }
+  }
+
+  throw "reach end";
+
   
-  let x2 = alien_robots[alien_id][2].x;
+  /*let x2 = alien_robots[alien_id][2].x;
   let y2 = alien_robots[alien_id][2].y;
   let r2 = alien_robots[alien_id][2].distance;
 
   console.log(x0,y0,r0,x1,y1,r1,x2,y2,r2);
   console.log(three_circles_intersection(x0,y0,r0,x1,y1,r1,x2,y2,r2));
-  return { position: three_circles_intersection(x0,y0,r0,x1,y1,r1,x2,y2,r2) };
+  return { position: three_circles_intersection(x0,y0,r0,x1,y1,r1,x2,y2,r2) };*/
 }
 
 function closestPair() {
