@@ -301,6 +301,16 @@ function api_robot(app) {
     }
   });
 
+  app.get("/alien/:id/position", async (req, res) => {
+    try {
+      res.send(getAlienPos(req.params.robot_id));
+      //res.status(200).send("Position of the robot is retrieved");
+    } catch (err) {
+      console.error(err);
+      res.status(424).send("Failed Dependency");
+    }
+  });
+
   app.get("/closestpair", async (req, res) => {
     try {
       res.send({distance: closestPairDist()});
