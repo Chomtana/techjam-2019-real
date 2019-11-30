@@ -1,6 +1,8 @@
 let robots = {};
 
 function dist(first, second, metric) {
+  console.log(metric)
+
   if (typeof first === "string") {
     first = parseInt(getRobotPos(/^robot#([1-9][0-9]*)$/.exec(first)[1]))
   }
@@ -16,6 +18,7 @@ function dist(first, second, metric) {
   second.y = parseFloat(second.y);
   
   if (Math.abs(first.x) > 1e9 || Math.abs(first.y) > 1e9 || Math.abs(second.x) > 1e9 || Math.abs(second.y) > 1e9) throw "overbound";
+  
   if (metric == "manhattan") {
     return {distance: parseFloat(Math.sqrt((second.x-first.x)*(second.x-first.x) + (second.y-first.y)*(second.y-first.y)).toFixed(4))};
   } else {
@@ -24,9 +27,10 @@ function dist(first, second, metric) {
 }
 
 function getRobotPos(x) {
-  if(robots.find(x)==null) throw "No robotId exists"
+  console.log(robots, x);
+  if(!(x in robots)) throw "No robotId exists"
   return {
-    "position": {
+    "position" : {
       "x": robots[x].x,
       "y": robots[x].y
     }
@@ -43,23 +47,32 @@ function api_robot(app) {
       res.send(dist(req.body.first_pos, req.body.second_pos, req.body.metric));
     } catch (err) {
       console.error(err);
-      res.status(400).send();
+      if (err == "No robotId exists") {
+        res.status(404).send("Unrecognized robot ID");
+      } else {
+        res.status(400).send();
+      }
     }
   });
 
   app.get("/robot/:robot_id/position", async (req, res) => {
     try {
-      res.send(getRobotPos(robot_id));
+      res.send(getRobotPos(req.params.robot_id));
+      res.sendStatus(200).send("Position of the robot is retrieved");
     } catch (err) {
       console.error(err);
-      res.status(400).send();
+      if (err == "No robotId exists") {
+        res.status(404).send("Unrecognized robot ID");
+      } else {
+        res.status(400).send();
+      }
     }
   })
 
   app.put("/robot/:id/position", async (req, res) => {
     try {
       setRobotPos(req.params.id, req.body.position)
-      res.sendStatus(204);
+      res.sendStatus(204).send("Current position of the robot is updated");
     } catch (err) {
       console.error(err);
       res.status(400).send();
